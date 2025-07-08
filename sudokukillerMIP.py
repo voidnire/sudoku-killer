@@ -160,6 +160,69 @@ medium_data_1 = [
 ]
 
 
+expert_data_1 = [
+    #BLOCO 1
+    ([(1,1)],5), #coluna / linha
+    ([(2,1),(3,1)],7),
+    ([(1,2),(2,2)],6),
+    ([(3,2),(4,2)],12),
+    ([(1,3),(1,4)],10),
+    ([(2,3),(3,3),(2,4),(3,4)],24),
+    #BLOCO 1
+
+    #BLOCO 2
+    ([(4,1),(5,1),(5,2)],16), 
+    ([(6,1),(7,1),(8,1)],20), 
+
+    ([(6,2),(7,2)],12), #coluna / linha
+    ([(4,3),(5,3),(4,4)],12), 
+    ([(6,3),(6,4),(5,4)],16),
+    #BLOCO 2
+
+    #BLOCO 3
+    ([(9,1),(9,2)],4),
+    ([(8,2),(8,3),(7,3)],16),
+    ([(9,3),(9,4),(8,4),(7,4)],20),
+    #BLOCO 3
+
+    #BLOCO 4
+    ([(1,5),(1,6),(2,6),(3,6)],24),
+    ([(2,5),(3,5)],5),
+    #BLOCO 4
+
+    #BLOCO 5
+    ([(4,5),(5,5)],12),
+    ([(6,5),(7,5)],7),
+    ([(4,6),(4,7)],13),
+    ([(5,6),(5,7),(6,6),(7,6)],17),
+    #BLOCO 5
+
+    #BLOCO 6
+    ([(8,5),(9,5)],13),
+    ([(8,6),(8,7)],7),
+    ([(9,6),(9,7)],15),
+    #BLOCO 6
+
+    #BLOCO 7
+    ([(1,7)],6),
+    ([(1,8)],2),
+    ([(1,9),(2,7),(2,8),(2,9)],23),
+    ([(3,7),(3,8),(4,8)],11),
+    ([(3,9),(4,9),(5,9),(5,8),(6,8)],24),
+    #BLOCO 7
+
+    #BLOCO 8
+    ([(6,7),(7,7)],12),
+    ([(6,9),(7,9)],7),
+    #BLOCO 8
+
+    #BLOCO 9
+    ([(7,8),(8,8),(9,8)],19),
+    ([(8,9),(9,9)],8),
+    #BLOCO 9
+
+]
+
 
 # checando se ta certo as cages ---------------------------------
 #for squares, sum_ in data_killer[6:9]:
@@ -175,7 +238,7 @@ medium_data_1 = [
 
 # checando se cada celula esta em exatamente 1 grupo ------------------------
 sqs = set()
-for squares, sum_ in medium_data_1:
+for squares, sum_ in expert_data_1:
     for s in squares:
         assert s not in sqs, "Repeated killer square"
         sqs.add(s)
@@ -218,7 +281,7 @@ for cells in data_sudoku:
     for i in range(1,10):
         m.addConstr(sum(grid[x-1][y-1][i-1] for (x,y) in cells) >= 1.)
 
-for cells, sum_ in medium_data_1:
+for cells, sum_ in expert_data_1:
     m.addConstr(sum(i*grid[x-1][y-1][i-1] for i in range(1,10) for (x,y) in cells) == sum_)
 
 m.optimize() 
