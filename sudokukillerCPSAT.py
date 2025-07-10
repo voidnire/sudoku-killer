@@ -1,4 +1,6 @@
 from ortools.sat.python import cp_model
+from instances import easy_data_1, medium_data_1, expert_data_1
+
 
 def killer_sudoku_solver(data):
     model = cp_model.CpModel()
@@ -34,18 +36,31 @@ def killer_sudoku_solver(data):
         celulas, soma = cage
         vars_cage = []
         for (coluna, linha) in celulas:
-            # Converte para 0-based e (linha,coluna)
+            # converte para 0-based e (linha,coluna)
             v = (linha-1, coluna-1)
             vars_cage.append(cell[v])
         model.AddAllDifferent(vars_cage)
         model.Add(sum(vars_cage) == soma)
 
-    # Resolve o problema
+    # config solver
     solver = cp_model.CpSolver()
+
+    # logs
+    solver.parameters.log_search_progress = True
+    solver.parameters.num_search_workers = 4  # paralelismo
+
+    # solving the problem
     status = solver.Solve(model)
 
+    # saída details
+    print("="*50)
+
     if status == cp_model.FEASIBLE or status == cp_model.OPTIMAL:
-        print("\nSolução encontrada :) !")
+        if status == cp_model.OPTIMAL:
+            print("\nSolução ótima encontrada! :D")
+        else:
+            print("\nSolução viável encontrada. :)")
+
         for i in range(ORDEM):
             if i % RAIZ == 0 and i != 0:
                 print("-"*25)
@@ -54,137 +69,32 @@ def killer_sudoku_solver(data):
                     print("|", end=" ")
                 print(f"{solver.Value(cell[(i,j)])} ", end=" ")
             print()
+        
         print()
+
+        # stats detalhadas
+        print("\n" + "-"*50)
+        print("ESTATÍSTICAS:")
         print(f"Status = {solver.status_name(status)}")
+        print(f"Tempo de resolução: {solver.WallTime()} s")
+
+        print(f"Conflitos: {solver.NumConflicts()}")
+        print(f"Branches: {solver.NumBranches()}")
+        print(f"Tempo de decisão: {solver.UserTime()}s")
+
+
+        #print(f"Propagações: {solver.NumPropagations()}")
+        #print(f"Variáveis no modelo: {model.NumVariables()}")
+        #print(f"Restrições no modelo: {model.NumConstraints()}")
+
+
 
     else:
-        print("\nNão tem solução :/")
-
-easy_data_1 = [
-    #BLOCO 1
-    ([(1,1),(1,2)],15), #coluna / linha
-    ([(2,1)],1),
-    ([(2,2)],8),
-    ([(1,3),(2,3)],7), #coluna / linha
-    ([(3,1),(4,1),(5,1)],12), #coluna / linha
-    ([(3,2),(4,2)],12), #coluna / linha
-    ([(3,3),(4,3),(4,4)],8), #coluna / linha
-    #BLOCO 1
-
-    #BLOCO 2
-    ([(5,2),(5,3),(5,4)],16),
-    ([(6,1),(7,1),(8,1),(7,2)],18),
-    ([(6,2),(6,3),(7,3)],16),
-    #BLOCO 2
-
-    #BLOCO 3
-    ([(9,1)],8),
-    ([(8,2),(9,2)],6),
-    ([(8,3),(8,4),(9,3),(9,4)],24),
-    #BLOCO 3
-
-    #BLOCO 4
-    ([(1,4),(2,4),(2,5),(1,5),(1,6)],31),
-    ([(3,4)],5),
-    ([(3,5),(3,6),(2,6)],9),
-    #BLOCO 4
-
-    #BLOCO 5
-    ([(6,4),(6,5)],10),
-    ([(4,5),(5,5)],11),
-    ([(4,6),(5,6),(5,7)],16),
-    ([(6,6),(6,7),(7,7)],10),
-    #BLOCO 5
-
-    #BLOCO 6
-    ([(7,4)],9),
-    ([(7,5),(7,6)],12),
-    ([(8,5),(9,5),(9,6),(9,7)],16),
-    ([(8,6),(8,7),(8,8),(9,8)],20),
-    #BLOCO 6
-
-    #BLOCO 7
-    ([(1,7),(2,7),(3,7),(4,7)],22),
-    ([(1,8),(2,8)],7),
-    ([(1,9),(2,9)],8),
-    ([(3,8),(4,8),(5,8)],19),
-    ([(3,9),(4,9)],12),
-    #BLOCO 7
-
-    #BLOCO 8
-    ([(5,9),(6,9)],13),
-    ([(6,8),(7,8)],12),
-    #BLOCO 8
-
-    #BLOCO 9
-    ([(7,9),(8,9)],3),
-    ([(9,9)],9),
-    #BLOCO 9
-]
+        print("\nNenhuma solução encontrada :/")
+        print(f"Status: {solver.StatusName(status)}")
+        print(f"Tempo de execução: {solver.WallTime():.2f} segundos")
+        print(f"Conflitos: {solver.NumConflicts()}")
+        print(f"Branches: {solver.NumBranches()}")
 
 
-medium_data_1 = [
-    #BLOCO 1
-    ([(1,1),(1,2),(1,3)],6), #coluna / linha
-    ([(2,1),(3,1),(2,2),(3,2),(2,3)],35),
-    ([(3,3),(4,3)],10),
-    #BLOCO 1
-
-    #BLOCO 2
-    ([(4,1),(4,2)],7), 
-    ([(5,1),(5,2)],7), 
-    ([(5,3),(5,4)],16), #coluna / linha
-    ([(6,1),(7,1),(8,1)],21), 
-    ([(6,2),(7,2)],9),
-    ([(6,3),(7,3),(6,4),(7,4)],20), 
-    #BLOCO 2
-
-    #BLOCO 3
-    ([(9,1),(9,2),(8,2)],15),
-    ([(8,3),(9,3),(9,4)],10),
-    #BLOCO 3
-
-    #BLOCO 4
-    ([(1,4)],4),
-    ([(2,4),(3,4),(3,5)],9),
-    ([(1,5),(2,5)],13),
-    ([(1,6),(2,6),(2,7)],18),
-    ([(3,6),(4,6)],9),
-    #BLOCO 4
-
-    #BLOCO 5
-    ([(4,4),(4,5)],17),
-    ([(5,5),(6,5)],6),
-    ([(5,6),(6,6)],11),
-    #BLOCO 5
-
-    #BLOCO 6
-    ([(8,4),(8,5),(7,5)],15),
-    ([(7,6),(7,7)],8),
-    ([(8,6),(8,7)],10),
-    ([(9,5),(9,6),(9,7)],10),
-    #BLOCO 6
-
-    #BLOCO 7
-    ([(1,7)],6),
-    ([(1,8),(1,9),(2,9)],17),
-    ([(2,8),(3,8)],4),
-    ([(3,7),(4,7)],6),
-    ([(3,9),(4,9)],12),
-    #BLOCO 7
-
-    #BLOCO 8
-    ([(5,7),(5,8),(4,8)],20),
-    ([(5,9),(6,9)],7),
-    ([(6,7),(6,8),(7,8)],17),
-    #BLOCO 8
-
-    #BLOCO 9
-    ([(7,9),(8,9)],10),
-    ([(8,8)],4),
-    ([(9,8),(9,9)],16),
-    #BLOCO 9
-
-]
-
-killer_sudoku_solver(medium_data_1)
+killer_sudoku_solver(expert_data_1)
