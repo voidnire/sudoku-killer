@@ -1,5 +1,5 @@
 import gurobipy as gp
-from instances import easy_data_1, medium_data_1, expert_data_1
+from INSTANCES.instances import easy_data_1, medium_data_1, expert_data_1
 
 og_data_killer = [
     ([(1,1),(1,2)],15),
@@ -34,7 +34,7 @@ og_data_killer = [
     ([(8,9),(9,9)],9),
 ]
 
-
+instance_data = expert_data_1  
 
 # checando se ta certo as cages ---------------------------------
 #for squares, sum_ in data_killer[6:9]:
@@ -50,7 +50,7 @@ og_data_killer = [
 
 # checando se cada celula esta em exatamente 1 grupo ------------------------
 sqs = set()
-for squares, sum_ in expert_data_1:
+for squares, sum_ in instance_data:
     for s in squares:
         assert s not in sqs, "Repeated killer square"
         sqs.add(s)
@@ -93,7 +93,7 @@ for cells in data_sudoku:
     for i in range(1,10):
         m.addConstr(sum(grid[x-1][y-1][i-1] for (x,y) in cells) >= 1.)
 
-for cells, sum_ in expert_data_1:
+for cells, sum_ in instance_data:
     m.addConstr(sum(i*grid[x-1][y-1][i-1] for i in range(1,10) for (x,y) in cells) == sum_)
 
 m.optimize() 

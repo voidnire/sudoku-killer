@@ -1,11 +1,10 @@
-# 🧩 Killer Sudoku Solvers 
+# 🧩 Killer Sudoku Solvers
 
-Este projeto implementa um solver de Killer Sudoku utilizando o **CP-SAT Solver do OR-Tools**. 
+Este projeto implementa um solver de Killer Sudoku utilizando o **CP-SAT Solver do OR-Tools**.
 
 > Para fins comparativos, também foi implementado o solver MIP de Killer Sudoku desenvolvido por [Aapeli Vuorinen](https://www.aapelivuorinen.com/blog/2023/01/18/killer-sudoku-mip).
 
 Abaixo está a documentação do CP-SAT:
-
 
 # CPSAT OR-Tools
 
@@ -41,18 +40,21 @@ Cria-se um dicionário cell com variáveis inteiras para cada célula do Sudoku,
 ## Restrições
 
 ### linhas AllDifferent
+
 ```python
 for i in range(ORDEM):
     model.AddAllDifferent([cell[(i,j)] for j in range(ORDEM)])
 ```
 
 ### colunas AllDifferent
+
 ```python
 for i in range(ORDEM):
     model.AddAllDifferent([cell[(i,j)] for j in range(ORDEM)])
 ```
 
 ### blocos 3x3 AllDifferent
+
 ```python
 for bi in range(0, ORDEM, RAIZ):
     for bj in range(0, ORDEM, RAIZ):
@@ -64,6 +66,7 @@ for bi in range(0, ORDEM, RAIZ):
 ```
 
 ### gaiolas 3x3 AllDifferent
+
 ```python
 for cage in data:
     celulas, soma = cage
@@ -76,12 +79,14 @@ for cage in data:
 ```
 
 ## Configuração do solver
+
 ```python
 solver = cp_model.CpSolver()
 solver.parameters.log_search_progress = True
 solver.parameters.num_search_workers = 4
 ```
 
-Instancia-se o solver e configura-se: 
+Instancia-se o solver e configura-se:
+
 - Logs de progresso de busca ativados.
 - Paralelismo com 4 threads.
