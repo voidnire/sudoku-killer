@@ -90,3 +90,8 @@ Instancia-se o solver e configura-se:
 
 - Logs de progresso de busca ativados.
 - Paralelismo com 4 threads.
+
+
+# WIP:
+- Gerador de instâncias novas de Sudoku Killer.
+
